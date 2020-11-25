@@ -1,27 +1,21 @@
 import { Body, UseGuards } from '@nestjs/common';
 import { Controller, Get, Post, UseFilters, UseInterceptors, ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter } from 'src/core/filter/exception';
-import { RolesGuard } from 'src/core/guards/user.guard';
-import { LoggerMiddleware } from 'src/core/middleware/logger';
-import { UserDataDto } from './dto/userdatadto';
+import { HttpExceptionFilter } from 'src/shared/filter/exception';
+import { RolesGuard } from 'src/shared/guards/user.guard';
+import { LoggingInterceptor } from 'src/shared/interceptor/intercept';
+import { LoggerMiddleware } from 'src/shared/middleware/logger';
 import { UserService } from './user.service';
 // User HTTP Get
 
-@UseInterceptors(LoggerMiddleware)
-@UseGuards(RolesGuard)
+@UseInterceptors(LoggingInterceptor)
 @UseFilters( new HttpExceptionFilter())
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('/')
-  getHello(): string {
-    return this.userService.getHello();
-  }
-
-  @Post('/')
-  postHello( @Body(new ValidationPipe()) userDataDto: UserDataDto): string {
-    return this.userService.getHello();
+  @Get('/ping')
+  postHello(): string {
+    return 'Hello from User'
   }
 
   
